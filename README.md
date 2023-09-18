@@ -8,5 +8,7 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 # storefront
 
+
 ![Sandbox](https://wc7yks-5173.csb.app/)
 ![UML](<Screenshot 2023-09-18 201509.png>)
+
