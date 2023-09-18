@@ -25,7 +25,7 @@ console.log(props.myCategories)
             return (
               <Grid item xs={4} key={idx}>
                 <Link to="/products" className="link">
-                  <Item onClick={() => props.selectedCategory(item.name)}>
+                  <Item onClick={() => props.selectCategory(item.name)}>
                     <div className="imgContain">
                       <img src={item.image} alt="" style={{width: "-webkit-fill-available"}}/>
                     </div>
