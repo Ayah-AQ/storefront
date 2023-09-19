@@ -18,8 +18,6 @@ function Categories(props) {
                 <Paper
                   onClick={() => props.selectCategory(item.name)}
                   sx={{
-                    ...props.theme.typography.body2,
-                    padding: props.theme.spacing(1),
                     textAlign: "center",
                   }}
                 >
