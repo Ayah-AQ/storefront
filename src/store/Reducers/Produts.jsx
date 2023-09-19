@@ -1,3 +1,5 @@
+import * as types from "../Actions/Type";
+
 
 const initialState = {
   products: [
@@ -133,12 +135,26 @@ const initialState = {
 
 export default (state = initialState, action) => {
   const { type, payload } = action;
+  
   switch (type) {
     case "SELECT":
       const selectedProducts = initialState.products.filter(
         (item) => payload === item.category
       );
       return { products: selectedProducts };
+      
+    case "INCREASE":
+      const updatedProducts = state.products.map((product) => {
+        if (product.name === payload.name) {
+          return {
+            ...product,
+            count: product.count + 1,
+          };
+        }
+        return product;
+      });
+      return { products: updatedProducts };
+
     default:
       return state;
   }
