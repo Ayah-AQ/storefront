@@ -10,5 +10,7 @@ Currently, two official plugins are available:
 
 
 [Sandbox](https://wc7yks-5173.csb.app/)
+[Sandbox-2](https://wwmv4k-5173.csb.app/)
+</br>
 ![UML](<Screenshot 2023-09-18 201509.png>)
 
