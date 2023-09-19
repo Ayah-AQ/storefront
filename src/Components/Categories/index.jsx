@@ -21,7 +21,6 @@ function Categories(props) {
                     ...props.theme.typography.body2,
                     padding: props.theme.spacing(1),
                     textAlign: "center",
-                    color: props.theme.palette.text.secondary,
                   }}
                 >
                   <div className="imgContain">
