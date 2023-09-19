@@ -1,3 +1,4 @@
+import * as types from "../../Actions/Type";
 
 
 const initialState = {
@@ -26,11 +27,12 @@ const initialState = {
   ],
   active: "",
 };
-// eslint-disable-next-line react-refresh/only-export-components
+
+
 export default (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
-    case "SELECT":
+    case types.SELECT:
       return {
         category: state.category,
         active: `${payload}`,
