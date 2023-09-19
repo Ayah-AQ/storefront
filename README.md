@@ -9,6 +9,6 @@ Currently, two official plugins are available:
 # storefront
 
 
-![Sandbox](https://wc7yks-5173.csb.app/)
+[Sandbox](https://wc7yks-5173.csb.app/)
 ![UML](<Screenshot 2023-09-18 201509.png>)
 
