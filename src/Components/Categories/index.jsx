@@ -18,10 +18,6 @@ function Categories(props) {
                 <Paper
                   onClick={() => props.selectCategory(item.name)}
                   sx={{
-                    backgroundColor:
-                      props.theme.palette.mode === "dark"
-                        ? "#1A2027"
-                        : "#fff",
                     ...props.theme.typography.body2,
                     padding: props.theme.spacing(1),
                     textAlign: "center",
