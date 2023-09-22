@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
@@ -7,76 +7,131 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-import { removeItemFromCart } from "../../store/Actions/cartAction";
+import Button from "@mui/material/Button";
+import {
+  addItemToCart,
+  increaseProduct,
+  decreaseProduct,
+  removeItemFromCart,
+  updateProductInStock,
+} from "../../store/Actions/cartAction";
 
-function Cart(props) {
-  let counter = 0;
+function Cart() {
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
 
-  const handleRemoveItem = (name) => {
-    props.removeItemFromCart(name);
+  const handleAddToCart = (product) => {
+    if (product.inStock > 0) {
+      dispatch(addItemToCart(product));
+
+      const updatedInStock = product.inStock - 1;
+      dispatch(updateProductInStock(product.name, updatedInStock));
+    }
+  };
+
+  const handleIncrease = (name, productId) => {
+    const item = cartItems.find((cartItem) => cartItem.name === name);
+    if (item && item.inStock > 0) {
+      dispatch(increaseProduct(name));
+
+      const updatedInStock = item.inStock - 1;
+      dispatch(updateProductInStock(productId, updatedInStock));
+    }
+  };
+
+  const handleDecrease = (name, productId) => {
+    const item = cartItems.find((cartItem) => cartItem.name === name);
+    if (item && item.count > 1) {
+      dispatch(decreaseProduct(name));
+
+      const updatedInStock = item.inStock + 1;
+      dispatch(updateProductInStock(productId, updatedInStock));
+    } else {
+      handleRemoveItem(name, productId);
+    }
+  };
+
+  const handleRemoveItem = (name, productId) => {
+    dispatch(removeItemFromCart(name));
+
+    const item = cartItems.find((cartItem) => cartItem.name === name);
+    if (item) {
+      const updatedInStock = item.inStock + item.count;
+      dispatch(updateProductInStock(productId, updatedInStock));
+    }
+  };
+
+  const calculateTotal = () => {
+    let total = 0;
+    cartItems.forEach((item) => {
+      total += item.price * item.count;
+    });
+    return total;
   };
 
   return (
-    <>
+    <div>
       <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
-        {props.cart.items.map((item, idx) => {
-          counter = counter + item.price * item.count;
-          return (
-            <React.Fragment key={idx}>
-              <ListItem alignItems="flex-start">
-                <ListItemAvatar>
-                  <Avatar alt={item.name} src={item.image} />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={item.name}
-                  secondary={
-                    <React.Fragment>
-                      <Typography
-                        sx={{ display: "block" }}
-                        component="span"
-                        variant="body2"
-                        color="text.primary"
-                      >
-                        {item.description}
-                      </Typography>
-                      <div className="price">{item.price}$</div>
-                      <span>Quantity: {item.count}</span>
-                    </React.Fragment>
-                  }
-                />
-                <button onClick={() => handleRemoveItem(item.name)}>Remove</button>
-              </ListItem>
-              <Divider variant="inset" component="li" />
-            </React.Fragment>
-          );
-        })}
-        <ListItemText
-          primary="Total:"
-          secondary={
-            <React.Fragment>
-              <Typography
-                sx={{ display: "block" }}
-                component="span"
-                variant="body2"
-                color="text.primary"
-                className="total"
-              >
-                <span className="price"> {Math.ceil(counter)}$</span>
-              </Typography>
-            </React.Fragment>
-          }
-        />
+        <Typography variant="h4" gutterBottom>
+          Your Cart
+        </Typography>
+        {cartItems.length === 0 ? (
+          <Typography variant="body1">Your cart is empty.</Typography>
+        ) : (
+          <>
+            {cartItems.map((item) => (
+              <React.Fragment key={item.name}>
+                <ListItem alignItems="flex-start">
+                  <ListItemAvatar>
+                    <Avatar alt={item.name} src={item.image} />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={item.name}
+                    secondary={
+                      <React.Fragment>
+                        <Typography
+                          sx={{ display: "block" }}
+                          component="span"
+                          variant="body2"
+                          color="text.primary"
+                        >
+                          {item.description}
+                        </Typography>
+                        <div className="price">{item.price}$</div>
+                        <span>Quantity: {item.count}</span>
+                      </React.Fragment>
+                    }
+                  />
+                  <Button variant="contained" onClick={() => handleIncrease(item.name, item.name)}>+</Button>
+                  <Button variant="contained" onClick={() => handleDecrease(item.name, item.name)}>-</Button>
+                  <Button variant="contained" onClick={() => handleRemoveItem(item.name, item.name)}>Remove</Button>
+                </ListItem>
+                <Divider variant="inset" component="li" />
+              </React.Fragment>
+            ))}
+            <ListItem>
+              <ListItemText
+                primary="Total:"
+                secondary={
+                  <React.Fragment>
+                    <Typography
+                      sx={{ display: "block" }}
+                      component="span"
+                      variant="body2"
+                      color="text.primary"
+                      className="total"
+                    >
+                      <span className="price"> {Math.ceil(calculateTotal())}$</span>
+                    </Typography>
+                  </React.Fragment>
+                }
+              />
+            </ListItem>
+          </>
+        )}
       </List>
-    </>
+    </div>
   );
 }
 
-const mapStateToProps = (state) => ({
-  cart: state.cart,
-});
-
-const mapDispatchToProps = {
-  removeItemFromCart,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Cart);
+export default Cart;

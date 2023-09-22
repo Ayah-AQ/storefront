@@ -1,53 +1,90 @@
-import React from 'react';
-import { connect } from "react-redux";
+
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
-import { addItemToCart } from "../../store/Actions/cartAction";
-import { increaseProduct } from "../../store/Actions/cartAction";
 
-function Products(props) {
-  const handleQuantityChange = (itemId, quantity) => {
-    props.increaseProduct(itemId, parseInt(quantity));
+import { fetchProducts } from "../../store/Actions/actions";
+import { addItemToCart } from "../../store/Actions/cartAction";
+
+function ProductItem({ product }) {
+  const [quantity, setQuantity] = React.useState(1);
+  const dispatch = useDispatch();
+
+  const handleQuantityChange = (e) => {
+    const newQuantity = parseInt(e.target.value, 10);
+    if (!isNaN(newQuantity) && newQuantity >= 1) {
+      setQuantity(newQuantity); 
+    }
+  };
+
+  const handleAddToCart = () => {
+    if (product.inStock > 0) {
+      dispatch(addItemToCart({ ...product, quantity }));    }
   };
 
   return (
+    <Paper
+      sx={{
+        backgroundColor: "#fff",
+        padding: "10px",
+        textAlign: "center",
+        color: "#000",
+      }}
+    >
+      <div className="imgContain">
+        {/* <img
+          src={product.image}
+          alt={product.name}
+          style={{ width: "-webkit-fill-available" }}
+        /> */}
+      </div>
+      <h3 style={{ color: "red" }}>{product.name}</h3>
+      <div className="price">${product.price} JD</div>
+      <p>{product.description}</p>
+      <div>
+        <label htmlFor={`quantity-${product.name}`}>Quantity:</label>
+        <input
+  type="number"
+  id={`quantity-${product.name}`}
+  name={`quantity-${product.name}`}
+  value={quantity}
+  onChange={handleQuantityChange} 
+  min="1"
+/>
+
+      </div>
+      <button onClick={handleAddToCart} disabled={product.inStock === 0}>
+        {product.inStock === 0 ? "Out of Stock" : "Add to Cart"}
+      </button>
+    </Paper>
+  );
+}
+
+function Products() {
+  const dispatch = useDispatch();
+  const selectedCategory = useSelector((state) => state.categories.selectedCategory);
+  const products = useSelector((state) => state.products.products);
+
+  useEffect(() => {
+    if (selectedCategory) {
+      dispatch(fetchProducts(selectedCategory));
+    }
+  }, [selectedCategory, dispatch]);
+
+  const filteredProducts = selectedCategory
+    ? products.filter((product) => product.category === selectedCategory)
+    : products;
+
+  return (
     <div className="productContain" style={{ padding: "10px" }}>
-      <h1>{props.myProducts.products[0].category}</h1>
+      <h1>{selectedCategory}</h1>
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={3}>
-          {props.myProducts.products.map((item) => (
-            <Grid item xs={4} key={item.id}>
-              <Paper
-                sx={{
-                  backgroundColor:
-                    props.theme?.palette.mode === "dark" ? "#1A2027" : "#fff",
-                  ...props.theme?.typography.body2,
-                  padding: props.theme?.spacing(2),
-                  textAlign: "center",
-                  color: props.theme?.palette.text.secondary,
-                }}
-              >
-                <div className="imgContain">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    style={{ width: "-webkit-fill-available" }}
-                  />
-                </div>
-                <h3 style={{ color: "red" }}>{item.name}</h3>
-                <div className="price">${item.price} JD</div>
-                <p>{item.description}</p>
-                <div className="quantityCont">
-                  <label>Quantity</label>
-                  <input
-                    type="number"
-                    placeholder="1"
-                    onChange={(e) => handleQuantityChange(item.name, e.target.value)}
-                  />
-                </div>
-                <button onClick={() => props.addItemToCart(item, 1)}>Add To Cart</button>
-              </Paper>
+          {filteredProducts.map((product) => (
+            <Grid item xs={4} key={product.name}>
+              <ProductItem product={product} />
             </Grid>
           ))}
         </Grid>
@@ -56,9 +93,4 @@ function Products(props) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  myProducts: state.myProductsReducer,
-});
-
-const mapDispatchToProps = { addItemToCart, increaseProduct };
-export default connect(mapStateToProps, mapDispatchToProps)(Products);
+export default Products;
