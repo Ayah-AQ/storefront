@@ -1,13 +1,12 @@
-// Headers.js
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import Cart from "../Cart";
 
-function Header(props) {
+function Header() {
   const [showCart, setShowCart] = useState(false);
-
+  const cart = useSelector((state) => state.cart); 
   return (
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
       <Link to="/">
@@ -19,14 +18,14 @@ function Header(props) {
       </Link>
       <h1>Anime Shop</h1>
 
-      {props.cart.items.length > 0 && (
-        <div className="notification">{props.cart.items.length}</div>
+      {cart.items.length > 0 && (
+        <div className="notification">{cart.items.length}</div>
       )}
       <ShoppingCartIcon
         className="cart"
         onClick={() => setShowCart(!showCart)}
       />
-      {props.cart.items.length > 0 && showCart && (
+      {cart.items.length > 0 && showCart && (
         <>
           <div className="triangle"></div>
           <div className="list">
@@ -38,8 +37,4 @@ function Header(props) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  cart: state.cart,
-});
-
-export default connect(mapStateToProps)(Header);
+export default Header;

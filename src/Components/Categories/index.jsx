@@ -1,37 +1,47 @@
-// Categories.js
-import React from "react";
-import { Link } from "react-router-dom";
-import { connect } from "react-redux";
-import { selectedCategory } from "../../store/Actions/actions";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setSelectedCategory, fetchCategories } from "../../store/Actions/actions";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 
-function Categories(props) {
+function Categories() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const categories = useSelector((state) => state.categories.categories);
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
+  const handleCategoryClick = (category) => {
+    dispatch(setSelectedCategory(category));
+    navigate(`/products/${category}`);
+  };
+
   return (
     <div className="categoriesCont">
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={3}>
-          {props.myCategories.category.map((item) => (
+          {categories.map((item) => (
             <Grid item xs={4} key={item.id}>
-              <Link to="/products" className="link">
-                <Paper
-                  onClick={() => props.selectCategory(item.name)}
-                  sx={{
-                    textAlign: "center",
-                  }}
-                >
-                  <div className="imgContain">
-                    <img
-                      src={item.image}
-                      alt={item.displayName}
-                      style={{ width: "-webkit-fill-available" }}
-                    />
-                  </div>
-                  <h3 style={{ color: "red" }}>{item.displayName}</h3>
-                  <p>{item.description}</p>
-                </Paper>
-              </Link>
+              <Paper
+                onClick={() => handleCategoryClick(item.name)}
+                sx={{
+                  textAlign: "center",
+                }}
+              >
+                <div className="imgContain">
+                  {/* <img
+                    src={item.image}
+                    alt={item.name}
+                    style={{ width: "-webkit-fill-available" }}
+                  /> */}
+                </div>
+                <h3 style={{ color: "red" }}>{item.name}</h3>
+                <p>{item.description}</p>
+              </Paper>
             </Grid>
           ))}
         </Grid>
@@ -40,12 +50,4 @@ function Categories(props) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  myCategories: state.myCategoriesReducer,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  selectCategory: (categoryName) => dispatch(selectedCategory(categoryName)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Categories);
+export default Categories;
