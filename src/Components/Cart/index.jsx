@@ -29,35 +29,35 @@ function Cart() {
     }
   };
 
-  const handleIncrease = (name, productId) => {
+  const handleIncrease = (name) => {
     const item = cartItems.find((cartItem) => cartItem.name === name);
     if (item && item.inStock > 0) {
       dispatch(increaseProduct(name));
 
       const updatedInStock = item.inStock - 1;
-      dispatch(updateProductInStock(productId, updatedInStock));
+      dispatch(updateProductInStock(name, updatedInStock));
     }
   };
 
-  const handleDecrease = (name, productId) => {
+  const handleDecrease = (name) => {
     const item = cartItems.find((cartItem) => cartItem.name === name);
     if (item && item.count > 1) {
       dispatch(decreaseProduct(name));
 
       const updatedInStock = item.inStock + 1;
-      dispatch(updateProductInStock(productId, updatedInStock));
+      dispatch(updateProductInStock(name, updatedInStock));
     } else {
-      handleRemoveItem(name, productId);
+      handleRemoveItem(name);
     }
   };
 
-  const handleRemoveItem = (name, productId) => {
+  const handleRemoveItem = (name) => {
     dispatch(removeItemFromCart(name));
 
     const item = cartItems.find((cartItem) => cartItem.name === name);
     if (item) {
       const updatedInStock = item.inStock + item.count;
-      dispatch(updateProductInStock(productId, updatedInStock));
+      dispatch(updateProductInStock(name, updatedInStock));
     }
   };
 
@@ -66,7 +66,7 @@ function Cart() {
     cartItems.forEach((item) => {
       total += item.price * item.count;
     });
-    return total;
+    return total.toFixed(2); // Keep total as a float with two decimal places
   };
 
   return (
@@ -99,12 +99,14 @@ function Cart() {
                         </Typography>
                         <div className="price">{item.price}$</div>
                         <span>Quantity: {item.count}</span>
+                        <br/>
+                        <span>In Stock: {item.inStock}</span>
                       </React.Fragment>
                     }
                   />
-                  <Button variant="contained" onClick={() => handleIncrease(item.name, item.name)}>+</Button>
-                  <Button variant="contained" onClick={() => handleDecrease(item.name, item.name)}>-</Button>
-                  <Button variant="contained" onClick={() => handleRemoveItem(item.name, item.name)}>Remove</Button>
+                  <Button variant="contained" onClick={() => handleIncrease(item.name)}>+</Button>
+                  <Button variant="contained" onClick={() => handleDecrease(item.name)}>-</Button>
+                  <Button variant="contained" onClick={() => handleRemoveItem(item.name)}>Remove</Button>
                 </ListItem>
                 <Divider variant="inset" component="li" />
               </React.Fragment>
@@ -121,7 +123,7 @@ function Cart() {
                       color="text.primary"
                       className="total"
                     >
-                      <span className="price"> {Math.ceil(calculateTotal())}$</span>
+                      <span className="price"> {calculateTotal()}$</span>
                     </Typography>
                   </React.Fragment>
                 }
