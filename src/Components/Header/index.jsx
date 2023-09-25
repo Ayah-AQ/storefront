@@ -21,10 +21,11 @@ function Header() {
       {cart.items.length > 0 && (
         <div className="notification">{cart.items.length}</div>
       )}
+      <Link to={"/cart"}>
       <ShoppingCartIcon
         className="cart"
-        onClick={() => setShowCart(!showCart)}
-      />
+        // onClick={() => setShowCart(!showCart)}
+      /></Link>
       {cart.items.length > 0 && showCart && (
         <>
           <div className="triangle"></div>
