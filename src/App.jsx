@@ -1,13 +1,14 @@
 
+import { useState } from "react";
 import Categories from "./Components/Categories";
 import Headers from "./Components/Header"
 import Routers from "./Routres";
 
 function App() {
-
+  const [showCart, setShowCart] = useState(false); 
   return(
     <>
-    <Headers/>
+    <Headers setShowCart={setShowCart} showCart={showCart}/>
     <Routers/>
     </>
     )
