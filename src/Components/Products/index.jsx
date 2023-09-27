@@ -20,9 +20,11 @@ function ProductItem({ product }) {
   };
 
   const handleAddToCart = () => {
-    if (product.inStock > 0) {
-      dispatch(addItemToCart({ ...product, quantity }));    }
+    if (product.inStock >= quantity) {
+      dispatch(addItemToCart({ ...product, quantity }));
+    }
   };
+  
 
   return (
     <Paper

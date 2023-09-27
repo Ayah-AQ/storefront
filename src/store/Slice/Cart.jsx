@@ -5,16 +5,29 @@ const cartSlice = createSlice({
   initialState: { items: [] },
   reducers: {
     addItemToCart: (state, action) => {
-      const newItem = {
-        _id: action.payload._id,
-        name: action.payload.name,
-        category: action.payload.category,
-        inStock: action.payload.inStock - 1,
-        price: action.payload.price,
-        count: action.payload.quantity,
-      };
-      state.items.push(newItem);
+      const { _id, name, category, price, quantity } = action.payload;
+    
+      
+      const existingItem = state.items.find((item) => item._id === _id);
+    
+      if (existingItem) {
+        
+        existingItem.count += quantity;
+        existingItem.inStock -= quantity;
+      } else {
+        
+        const newItem = {
+          _id,
+          name,
+          category,
+          inStock: action.payload.inStock - quantity,
+          price,
+          count: quantity,
+        };
+        state.items.push(newItem);
+      }
     },
+    
     increaseProduct: (state, action) => {
       const { name } = action.payload;
       const item = state.items.find((item) => item.name === name);
