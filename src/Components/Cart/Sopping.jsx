@@ -14,7 +14,7 @@ import {
   decreaseProduct,
   removeItemFromCart,
   updateProductInStock,
-} from "../../store/Actions/cartAction";
+} from "../../store/Slice/Cart";
 import CheckoutForm from "../checkOut";
 
 function Cart() {
@@ -67,7 +67,7 @@ function Cart() {
     cartItems.forEach((item) => {
       total += item.price * item.count;
     });
-    return total.toFixed(2); // Keep total as a float with two decimal places
+    return total.toFixed(2); 
   };
 
   const handleSubmit = (e) => {
@@ -110,8 +110,8 @@ function Cart() {
                       </React.Fragment>
                     }
                   />
-                  <Button variant="contained" onClick={() => handleIncrease(item.name)}>+</Button>
-                  <Button variant="contained" onClick={() => handleDecrease(item.name)}>-</Button>
+                  {/* <Button variant="contained" onClick={() => handleIncrease(item.name)}>+</Button>
+                  <Button variant="contained" onClick={() => handleDecrease(item.name)}>-</Button> */}
                   <Button variant="contained" onClick={() => handleRemoveItem(item.name)}>Remove</Button>
                 </ListItem>
                 <Divider variant="inset" component="li" />

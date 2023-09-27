@@ -5,8 +5,8 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 
-import { fetchProducts } from "../../store/Actions/actions";
-import { addItemToCart } from "../../store/Actions/cartAction";
+import { fetchProducts } from "../../store/Slice/product";
+import { addItemToCart } from "../../store/Slice/Cart";
 
 function ProductItem({ product }) {
   const [quantity, setQuantity] = React.useState(1);
@@ -20,9 +20,11 @@ function ProductItem({ product }) {
   };
 
   const handleAddToCart = () => {
-    if (product.inStock > 0) {
-      dispatch(addItemToCart({ ...product, quantity }));    }
+    if (product.inStock >= quantity) {
+      dispatch(addItemToCart({ ...product, quantity }));
+    }
   };
+  
 
   return (
     <Paper
